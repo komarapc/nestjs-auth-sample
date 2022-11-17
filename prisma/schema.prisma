@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AuthLog {
+  id              String  @id @default(uuid())
+  user_id         String
+  role_code       String
+  token           String?
+  is_valid        Boolean
+  attempt_success Boolean
+  created_at      String
+  header          String?
+  network         String?
+  User            User    @relation(name: "AuthLog", fields: [user_id], references: [user_id])
+  Role            Roles   @relation(name: "AuthRole", fields: [role_code], references: [role_code])
+}
+
+model HasRole {
+  id               String  @id @default(uuid())
+  user_id          String
+  role_code        String
+  created_at       String
+  updated_at       String?
+  deleted_at       String?
+  created_by       String
+  updated_by       String?
+  deleted_by       String?
+  HasRoleCreatedBy User    @relation(name: "HasRoleCreatedBy", fields: [created_by], references: [user_id])
+  HasRoleUpdatedBy User?   @relation(name: "HasRoleUpdatedBy", fields: [updated_by], references: [user_id])
+  HasRoleDeletedBy User?   @relation(name: "HasRoleDeletedBy", fields: [deleted_by], references: [user_id])
+}
+
+model Roles {
+  role_code      String    @id @default(uuid())
+  role_name      String
+  created_at     String
+  updated_at     String?
+  deleted_at     String?
+  created_by     String
+  updated_by     String?
+  deleted_by     String?
+  RolesCreatedBy User      @relation(name: "RolesCreatedBy", fields: [created_by], references: [user_id])
+  RolesUpdatedBy User?     @relation(name: "RolesUpdatedBy", fields: [updated_by], references: [user_id])
+  RolesDeletedBy User?     @relation(name: "RolesDeletedBy", fields: [deleted_by], references: [user_id])
+  AuthRole       AuthLog[] @relation(name: "AuthRole")
+}
+
+model User {
+  user_id          String    @id @default(uuid())
+  username         String
+  email            String    @unique
+  password         String
+  is_active        Boolean   @default(true)
+  is_banned        Boolean   @default(false)
+  banned_for       String?
+  attempt_failed   Int       @default(0)
+  created_at       String
+  updated_at       String?
+  deleted_at       String?
+  AuthLog          AuthLog[] @relation(name: "AuthLog")
+  RolesCreatedBy   Roles[]   @relation(name: "RolesCreatedBy")
+  RolesUpdatedBy   Roles[]   @relation(name: "RolesUpdatedBy")
+  RolesDeletedBy   Roles[]   @relation(name: "RolesDeletedBy")
+  HasRoleCreatedBy HasRole[] @relation(name: "HasRoleCreatedBy")
+  HasRoleUpdatedBy HasRole[] @relation(name: "HasRoleUpdatedBy")
+  HasRoleDeletedBy HasRole[] @relation(name: "HasRoleDeletedBy")
+}
