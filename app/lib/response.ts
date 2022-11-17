@@ -1,3 +1,5 @@
+import { DEBUG } from './../config/config';
+
 export type T_ResponseJSON = {
   statusCode: number;
   success: boolean;
@@ -55,4 +57,8 @@ export const response409 = (msg: string): ResponseJSON => {
 };
 export const response500 = (msg: string): ResponseJSON => {
   return new ResponseJSON({ statusCode: 404, success: false, msg });
+};
+export const errorDebug = (error: any) => {
+  if (!DEBUG) return { ...response500(default_msg_500) };
+  return { ...response500(error.message) };
 };
