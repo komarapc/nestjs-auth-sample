@@ -14,6 +14,7 @@ async function bootstrap() {
     .setTitle('Api Documentation')
     .setDescription('See warehouse api docs')
     .setVersion('1.0')
+    .setContact('Komar', '', 'komar.izmi@gmail.com')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
