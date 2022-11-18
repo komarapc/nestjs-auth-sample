@@ -1,3 +1,4 @@
+import { CreateUserDto } from './users.dto';
 import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import UserRepository from './users.repository';

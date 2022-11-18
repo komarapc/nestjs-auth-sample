@@ -1,4 +1,4 @@
 export const SALT_ROUND: number = 12;
 export const SECRET_KEY: string =
-  '0e82fa83a0081a3eb658b4e78bb5fe6b121bd82fb26e999bab470492f32d7164';
+  'ce7486cdd1ddbf382d2e24ce54783a2f46e50f1ede9a492ae6ba604011a2edcb';
 export const DEBUG: boolean = true;
