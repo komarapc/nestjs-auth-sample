@@ -10,7 +10,7 @@ datasource db {
 model AuthLog {
   id              String  @id @default(uuid())
   user_id         String
-  role_code       String
+  role_code       String?
   token           String?
   is_valid        Boolean
   attempt_success Boolean
@@ -18,7 +18,7 @@ model AuthLog {
   header          String?
   network         String?
   User            User    @relation(name: "AuthLog", fields: [user_id], references: [user_id])
-  Role            Roles   @relation(name: "AuthRole", fields: [role_code], references: [role_code])
+  Role            Roles?  @relation(name: "AuthRole", fields: [role_code], references: [role_code])
 }
 
 model HasRole {
@@ -31,6 +31,8 @@ model HasRole {
   created_by       String
   updated_by       String?
   deleted_by       String?
+  User             User    @relation(name: "UserHasRoles", fields: [user_id], references: [user_id])
+  Roles            Roles   @relation(fields: [role_code], references: [role_code])
   HasRoleCreatedBy User    @relation(name: "HasRoleCreatedBy", fields: [created_by], references: [user_id])
   HasRoleUpdatedBy User?   @relation(name: "HasRoleUpdatedBy", fields: [updated_by], references: [user_id])
   HasRoleDeletedBy User?   @relation(name: "HasRoleDeletedBy", fields: [deleted_by], references: [user_id])
@@ -49,6 +51,7 @@ model Roles {
   RolesUpdatedBy User?     @relation(name: "RolesUpdatedBy", fields: [updated_by], references: [user_id])
   RolesDeletedBy User?     @relation(name: "RolesDeletedBy", fields: [deleted_by], references: [user_id])
   AuthRole       AuthLog[] @relation(name: "AuthRole")
+  HasRole        HasRole[]
 }
 
 model User {
@@ -70,4 +73,5 @@ model User {
   HasRoleCreatedBy HasRole[] @relation(name: "HasRoleCreatedBy")
   HasRoleUpdatedBy HasRole[] @relation(name: "HasRoleUpdatedBy")
   HasRoleDeletedBy HasRole[] @relation(name: "HasRoleDeletedBy")
+  HasRole          HasRole[] @relation(name: "UserHasRoles")
 }

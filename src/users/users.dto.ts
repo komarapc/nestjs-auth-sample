@@ -68,6 +68,7 @@ export type T_User = {
   email?: string;
   is_active?: boolean;
   is_banned?: boolean;
+  attempt_failed?: number;
   banned_for?: string;
   created_at?: string;
   updated_at?: string;

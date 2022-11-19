@@ -11,14 +11,21 @@ class UserRepository {
     return await this.prisma.user.findMany({
       where: { is_active: true },
       orderBy: { username: 'asc' },
+      include: { HasRole: true },
     });
   }
   async getById(user_id: string) {
-    return await this.prisma.user.findFirst({ where: { user_id } });
+    return await this.prisma.user.findFirst({
+      where: { user_id },
+      include: { HasRole: true },
+    });
   }
 
   async getByEmail(email: string) {
-    return await this.prisma.user.findFirst({ where: { email } });
+    return await this.prisma.user.findFirst({
+      where: { email },
+      include: { HasRole: true },
+    });
   }
 
   async getManyByUsername(username: string) {
@@ -27,6 +34,7 @@ class UserRepository {
         username: { contains: username },
         AND: { is_active: true, AND: { deleted_at: null } },
       },
+      include: { HasRole: true },
       orderBy: { username: 'asc' },
     });
   }
@@ -57,6 +65,7 @@ class UserRepository {
         updated_at: String(new Date().valueOf()),
         deleted_at: String(new Date().valueOf()),
       },
+      include: { HasRole: true },
     });
   }
 
@@ -67,6 +76,7 @@ class UserRepository {
         ...params,
         updated_at: String(new Date().valueOf()),
       },
+      include: { HasRole: true },
     });
     return user;
   }

@@ -17,7 +17,12 @@ async function bootstrap() {
     .setContact('Komar', '', 'komar.izmi@gmail.com')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      tagsSorter: 'alpha',
+      operationsSorter: 'alpha',
+    },
+  });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(3000);
 }
