@@ -29,4 +29,17 @@ export class AuthLogRepository {
     });
     return find_auth_log[0];
   }
+
+  /**
+   * !this function only for sign out
+   */
+  async updateSignOut(id: string) {
+    const auth_log = await this.prisma.authLog.update({
+      where: { id },
+      data: {
+        is_valid: false,
+      },
+    });
+    return auth_log;
+  }
 }

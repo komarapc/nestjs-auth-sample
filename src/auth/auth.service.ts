@@ -1,23 +1,21 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
-import ResponseJSON, {
+import { T_AuthLog, T_AuthLogHeader } from 'src/auth-log/auth-log.dto';
+import {
   default_msg_200,
   default_msg_404,
-  default_msg_500,
   errorDebug,
   response200,
   response201,
   response404,
-  response500,
 } from './../../app/lib/response';
 
 import { AuthLogRepository } from 'src/auth-log/auth-log.repository';
 import { HasRolesRepository } from 'src/has-roles/has-roles.repository';
 import { Injectable } from '@nestjs/common';
 import { SECRET_KEY } from 'app/config/config';
-import { T_AuthLogHeader } from 'src/auth-log/auth-log.dto';
-import { T_HasRoles } from 'src/has-roles/has-roles.dto';
+import { T_Token } from './auth.dto';
 import UserRepository from 'src/users/users.repository';
 
 @Injectable()
@@ -118,7 +116,7 @@ export class AuthService {
       const find_has_roles = await this.hasRoleRepo.getRolesByUserId(
         find_user.user_id,
       );
-      let avaliable_roles = new Array();
+      const avaliable_roles: Array<any> = new Array();
       find_has_roles.forEach((roles) => {
         avaliable_roles.push(roles.Roles);
       });
@@ -190,6 +188,21 @@ export class AuthService {
     }
   }
 
+  async signOut(token: string) {
+    try {
+      const decode: any = await this.decodeToken(token);
+      const find_last_auth: T_AuthLog = await this.authLogRepo.findUserLoggedIn(
+        decode?.user_id,
+      );
+      const update_auth_log = await this.authLogRepo.updateSignOut(
+        find_last_auth?.id,
+      );
+      return { ...response201('You are logged out') };
+    } catch (error) {
+      return errorDebug(error);
+    }
+  }
+
   async checkIsEmailExist(email: string): Promise<boolean> {
     try {
       const find = await this.userRepo.getByEmail(email);
@@ -224,7 +237,11 @@ export class AuthService {
 
   async checkUserAlreadySignin(user_id: string): Promise<boolean> {
     const user_logged_in = await this.authLogRepo.findUserLoggedIn(user_id);
-    if (!user_logged_in.is_valid) return false;
+    if (!user_logged_in?.is_valid) return false;
     return true;
+  }
+
+  async decodeToken(token: string) {
+    return jwt.decode(token);
   }
 }

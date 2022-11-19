@@ -3,9 +3,9 @@ import ResponseJSON, {
   response400,
 } from './../../app/lib/response';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Body, Param, Post, Res } from '@nestjs/common/decorators';
+import { Body, Header, Param, Post, Res } from '@nestjs/common/decorators';
 
-import { AuthDto, AuthRolesDto } from './auth.dto';
+import { AuthDto, AuthRolesDto, SignOutDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { Controller, Req } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -49,6 +49,7 @@ export class AuthController {
         header: request.headers,
         network: request.ip,
       });
+      console.log({ signin });
       res.status(signin.statusCode).send(signin);
     } catch (error) {
       res.status(400).send(errorDebug(error));
@@ -101,6 +102,35 @@ export class AuthController {
       res.status(signin.statusCode).send(signin);
     } catch (error) {
       res.status(400).send(errorDebug(error));
+    }
+  }
+
+  @Post('/signout')
+  @ApiOperation({ summary: 'Sign out' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          title: 'token',
+          type: 'string',
+          description: 'token from auth',
+        },
+      },
+    },
+  })
+  async signOut(
+    @Body() signOutDto: SignOutDto,
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const signout: ResponseJSON = await this.services.signOut(
+        signOutDto.token,
+      );
+      res.status(signout.statusCode).send(signout);
+    } catch (error) {
+      res.status(500).send(errorDebug(error));
     }
   }
 }

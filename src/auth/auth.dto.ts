@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsJWT, IsString } from 'class-validator';
 
 export type T_Auth = {
   email: string;
@@ -21,3 +21,14 @@ export class AuthRolesDto {
   @IsString()
   password: string;
 }
+export class SignOutDto {
+  @IsJWT()
+  token: string;
+}
+
+export type T_Token = {
+  user_id: string;
+  role_code: string;
+  iat: number;
+  exp: number;
+};
