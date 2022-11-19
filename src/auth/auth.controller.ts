@@ -1,11 +1,14 @@
-import { errorDebug, response400 } from './../../app/lib/response';
+import ResponseJSON, {
+  errorDebug,
+  response400,
+} from './../../app/lib/response';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Body, Param, Post } from '@nestjs/common/decorators';
+import { Body, Param, Post, Res } from '@nestjs/common/decorators';
 
 import { AuthDto, AuthRolesDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { Controller, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -33,18 +36,22 @@ export class AuthController {
       },
     },
   })
-  async signin(@Body() createAuthDto: AuthDto, @Req() request: Request) {
+  async signin(
+    @Body() createAuthDto: AuthDto,
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
     try {
       if (!Boolean(Object.keys(createAuthDto).length))
-        return { ...response400('Empty request') };
+        res.status(400).send({ ...response400('Empty request') });
       const { email, password } = createAuthDto;
       const signin = await this.services.signIn(email, password, {
         header: request.headers,
         network: request.ip,
       });
-      return signin;
+      res.status(signin.statusCode).send(signin);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 
@@ -78,21 +85,22 @@ export class AuthController {
   async signinByRole(
     @Body() authRoleDto: AuthRolesDto,
     @Req() request: Request,
+    @Res() res: Response,
   ) {
     try {
       // console.log();
       if (!Boolean(Object.keys(authRoleDto).length))
-        return { ...response400('Empty request') };
+        res.status(400).send({ ...response400('Empty request') });
       const { role_code, email, password } = authRoleDto;
-      const signin = await this.services.signinByRole(
+      const signin: ResponseJSON = await this.services.signinByRole(
         role_code,
         email,
         password,
         { header: request.headers, network: request.ip },
       );
-      return signin;
+      res.status(signin.statusCode).send(signin);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 }

@@ -9,15 +9,15 @@ import {
 import { Controller, Get, Post, Req } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions';
 import { UsersService } from './users.service';
-import {
+import ResponseJSON, {
   errorDebug,
   response400,
   default_msg_400,
 } from './../../app/lib/response';
-import { Body, Delete, Param, Patch } from '@nestjs/common/decorators';
-import { Request } from 'express';
+import { Body, Delete, Param, Patch, Res } from '@nestjs/common/decorators';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
 import { HttpStatus } from '@nestjs/common/enums';
+import { Request, Response } from 'express';
 
 @Controller('users')
 @ApiTags('Users')
@@ -26,46 +26,56 @@ export class UsersController {
 
   @Get('/')
   @ApiOperation({ summary: 'Get all active user' })
-  async findAllUsers() {
+  async findAllUsers(@Req() request: Request, @Res() res: Response) {
     try {
       return this.services.getAllUsers();
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 
   @Get('/findByUserID/:user_id')
   @ApiOperation({ summary: 'Get single user by user_id' })
-  async findById(@Param('user_id') user_id: string) {
+  async findById(
+    @Param('user_id') user_id: string,
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
     try {
-      if (!user_id) return { ...response400('missing parameter user_id') };
-      const user = await this.services.getById(user_id);
-      return user;
+      if (!user_id)
+        res.status(400).send({ ...response400('missing parameter user_id') });
+      const user: ResponseJSON = await this.services.getById(user_id);
+      res.status(user.statusCode).send(user);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 
   @Get('/findByEmail/:email')
   @ApiOperation({ summary: 'Get single user by email' })
-  async findByEmail(@Param('email') email: string) {
+  async findByEmail(@Param('email') email: string, @Res() res: Response) {
     try {
-      if (!email) return { ...response400('missing parameter email') };
-      const user = await this.services.findByEmail(email);
-      return user;
+      if (!email)
+        res.status(400).send({ ...response400('missing parameter email') });
+      const user: ResponseJSON = await this.services.findByEmail(email);
+      res.status(user.statusCode).send(user);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 
   @Get('/findByUsername/:username')
   @ApiOperation({ summary: 'Get many user by username' })
-  async findByUsername(@Param('username') username: string) {
+  async findByUsername(
+    @Param('username') username: string,
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
     try {
-      const users = await this.services.findByUsername(username);
-      return users;
+      const users: ResponseJSON = await this.services.findByUsername(username);
+      res.status(users.statusCode).send(users);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 
@@ -93,23 +103,33 @@ export class UsersController {
       },
     },
   })
-  async store(@Body() createUserDto: CreateUserDto) {
+  async store(
+    @Body() createUserDto: CreateUserDto,
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
     try {
-      const store = await this.services.storeUser({ ...createUserDto });
-      return store;
+      const store: ResponseJSON = await this.services.storeUser({
+        ...createUserDto,
+      });
+      res.status(store.statusCode).send(store);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 
   @Delete('/:user_id')
   @ApiOperation({ summary: 'Delete user using soft delete' })
-  async delete(@Param('user_id') user_id: string) {
+  async delete(
+    @Param('user_id') user_id: string,
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
     try {
-      const deleted_user = await this.services.delete(user_id);
-      return deleted_user;
+      const deleted_user: ResponseJSON = await this.services.delete(user_id);
+      res.status(deleted_user.statusCode).send(deleted_user);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 
@@ -166,18 +186,19 @@ export class UsersController {
   async update(
     @Param('user_id') user_id: string,
     @Body() updateUserDto: UpdateUserDto,
+    @Req() request: Request,
+    @Res() res: Response,
   ) {
     try {
       const { username, email, password, is_banned, is_active, banned_for } =
         updateUserDto;
       if (!user_id)
-        return new HttpException(
-          'missing parameter user_id',
-          HttpStatus.BAD_REQUEST,
-        );
+        res.status(400).send({ ...response400('missing parameter user_id') });
       if (!Boolean(Object.entries(updateUserDto).length))
-        return new HttpException('Empty request', HttpStatus.BAD_REQUEST);
-      const user = await this.services.update({
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .send({ ...response400('empty request') });
+      const user: ResponseJSON = await this.services.update({
         user_id,
         username,
         email,
@@ -186,9 +207,9 @@ export class UsersController {
         is_active,
         banned_for,
       });
-      return user;
+      res.status(user.statusCode).send(user);
     } catch (error) {
-      return errorDebug(error);
+      res.status(400).send(errorDebug(error));
     }
   }
 }

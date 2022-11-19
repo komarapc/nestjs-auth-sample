@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
+import { HttpStatus, Injectable } from '@nestjs/common';
 import {
   default_msg_200,
   default_msg_201,
@@ -11,7 +12,7 @@ import {
   response405,
 } from './../../app/lib/response';
 
-import { Injectable } from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions';
 import { SALT_ROUND } from './../../app/config/config';
 import { T_User } from './users.dto';
 import UserRepository from './users.repository';
@@ -39,7 +40,7 @@ export class UsersService {
   async findByEmail(email: string) {
     try {
       const user = await this.repository.getByEmail(email);
-      if (!user) return { ...response404(default_msg_404) };
+      if (!user) throw new HttpException('Not found', HttpStatus.NOT_FOUND);
       return { ...response200(default_msg_200), data: { user } };
     } catch (error) {
       return errorDebug(error);
@@ -48,6 +49,7 @@ export class UsersService {
   async findByUsername(username: string) {
     try {
       const users = await this.repository.getManyByUsername(username);
+      if (!Boolean(users.length)) return { ...response404(default_msg_404) };
       return { ...response200(default_msg_200), data: { users } };
     } catch (error) {
       return errorDebug(error);

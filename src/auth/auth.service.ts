@@ -217,7 +217,7 @@ export class AuthService {
         role_code,
       },
       SECRET_KEY,
-      { expiresIn: '3h' },
+      { expiresIn: '6h' },
     );
     return token;
   }
