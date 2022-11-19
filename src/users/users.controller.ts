@@ -28,7 +28,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all active user' })
   async findAllUsers(@Req() request: Request, @Res() res: Response) {
     try {
-      return this.services.getAllUsers();
+      const users: ResponseJSON = await this.services.getAllUsers();
+      res.status(users.statusCode).send(users);
     } catch (error) {
       res.status(400).send(errorDebug(error));
     }
