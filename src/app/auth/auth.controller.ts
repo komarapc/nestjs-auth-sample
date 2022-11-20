@@ -1,6 +1,21 @@
 import ResponseJSON, { errorDebug, response400 } from '../../lib/response';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Body, Header, Param, Post, Res } from '@nestjs/common/decorators';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiHeader,
+  ApiHeaders,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  Body,
+  Header,
+  Headers,
+  Param,
+  Post,
+  Res,
+} from '@nestjs/common/decorators';
 
 import { AuthDto, AuthRolesDto, SignOutDto } from './auth.dto';
 import { AuthService } from './auth.service';
@@ -103,6 +118,20 @@ export class AuthController {
 
   @Post('/signout')
   @ApiOperation({ summary: 'Sign out' })
+  // @ApiHeader({
+  //   name: 'Authorization',
+  //   description: 'Bearer token',
+  //   schema: {
+  //     type: 'string',
+  //     properties: {
+  //       authorization: {
+  //         type: 'string',
+  //         example: 'Bearer your_token',
+  //       },
+  //     },
+  //   },
+  // })
+  @ApiBearerAuth()
   @ApiBody({
     schema: {
       type: 'object',

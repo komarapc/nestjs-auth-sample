@@ -10,14 +10,15 @@ import { response401 } from 'src/lib/response';
 export class TokenMiddleware implements NestMiddleware {
   constructor(private readonly tokenService: TokenService) {}
   use(req: Request, res: ServerResponse, next: NextFunction) {
-    const { authorization }: any = req.headers;
-
+    let { authorization }: any = req.headers;
     this.tokenService.setAuthorization(authorization);
 
     // check authorization
     if (!this.tokenService.checkAuthorization()) {
+      res.statusCode = 401;
       res.writeHead(401, { 'content-type': 'application/json' });
       res.write(JSON.stringify({ ...response401(default_msg_401) }));
+      res.sendDate = true;
       res.end();
     }
 
@@ -30,7 +31,6 @@ export class TokenMiddleware implements NestMiddleware {
       res.end();
     }
 
-    // run tokenizer
     this.tokenService.tokenizer();
 
     /**

@@ -8,6 +8,7 @@ import {
   ApiParam,
   ApiResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { Controller, Get, Post, Req } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions';
@@ -36,6 +37,8 @@ export class UsersController {
 
   @Get('/')
   @ApiOperation({ summary: 'Get all active user' })
+  @ApiResponse({ status: 200, description: 'ok' })
+  @ApiUnauthorizedResponse({ status: 401, description: 'unauthorized' })
   async findAllUsers(
     // @Headers('authorization') authorization: string,
     @Req() request: Request,

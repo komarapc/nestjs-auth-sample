@@ -31,7 +31,7 @@ export class TokenService {
     return true;
   }
 
-  isAuthorizationBearer() {
+  isAuthorizationBearer(): Boolean {
     const bearer = this.authorization.split(' ');
     return bearer[0] === 'Bearer' ? true : false;
   }

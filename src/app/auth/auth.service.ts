@@ -31,10 +31,16 @@ export class AuthService {
       if (!find_user) return { ...response404('User not found') };
 
       // check if user already logged in
-      if (await this.checkUserAlreadySignin(find_user.user_id))
+      if (await this.checkUserAlreadySignin(find_user.user_id)) {
+        const auth_log = await this.authLogRepo.findUserLoggedIn(
+          find_user?.user_id,
+        );
         return {
           ...response200('Already sign in. Please comeback another time.'),
+          data: { token: auth_log.token },
         };
+      }
+
       // check if user is banned
       if (find_user.is_banned) {
         // check expires
@@ -150,10 +156,15 @@ export class AuthService {
       if (!find_user) return { ...response404(default_msg_404) };
 
       // check user if already sign in
-      if (await this.checkUserAlreadySignin(find_user.user_id))
+      if (await this.checkUserAlreadySignin(find_user.user_id)) {
+        const auth_log = await this.authLogRepo.findUserLoggedIn(
+          find_user?.user_id,
+        );
         return {
           ...response200('Already sign in. Please comeback another time.'),
+          data: { token: auth_log.token },
         };
+      }
 
       if (!(await this.checkComparePassword(password, find_user.password)))
         return { ...response200('Incorrect password') };

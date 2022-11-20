@@ -22,7 +22,7 @@ async function bootstrap() {
     .setDescription('See warehouse api docs')
     .setVersion('1.0')
     .setContact('Komar', '', 'komar.izmi@gmail.com')
-    .addBearerAuth({ in: 'header', type: 'http' })
+    .addBearerAuth({ name: 'Authorization', type: 'http', in: 'headers' })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {

@@ -31,6 +31,17 @@ export class AppModule implements NestModule {
     consumer
       .apply(TokenMiddleware)
       .exclude(
+        { path: '/', method: RequestMethod.GET },
+        { path: 'api', method: RequestMethod.GET },
+        { path: 'api/swagger-ui.css', method: RequestMethod.GET },
+        { path: 'api/swagger-ui-bundle.js', method: RequestMethod.GET },
+        {
+          path: 'api/swagger-ui-standalone-preset.js',
+          method: RequestMethod.GET,
+        },
+        { path: 'api/swagger-ui-init.js', method: RequestMethod.GET },
+        { path: 'api/favicon-32x32.png', method: RequestMethod.GET },
+        { path: 'api/favicon-16x16.png', method: RequestMethod.GET },
         { path: 'auth/signin', method: RequestMethod.ALL },
         { path: 'auth/signinByRole', method: RequestMethod.ALL },
       )
