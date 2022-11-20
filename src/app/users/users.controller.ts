@@ -1,6 +1,9 @@
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiDefaultResponse,
+  ApiHeader,
+  ApiHeaders,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -14,7 +17,14 @@ import ResponseJSON, {
   response400,
   default_msg_400,
 } from '../../lib/response';
-import { Body, Delete, Param, Patch, Res } from '@nestjs/common/decorators';
+import {
+  Body,
+  Delete,
+  Param,
+  Patch,
+  Res,
+  Headers,
+} from '@nestjs/common/decorators';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
 import { HttpStatus } from '@nestjs/common/enums';
 import { Request, Response } from 'express';
@@ -26,8 +36,13 @@ export class UsersController {
 
   @Get('/')
   @ApiOperation({ summary: 'Get all active user' })
-  async findAllUsers(@Req() request: Request, @Res() res: Response) {
+  async findAllUsers(
+    // @Headers('authorization') authorization: string,
+    @Req() request: Request,
+    @Res() res: Response,
+  ) {
     try {
+      // console.log({ authorization });
       const users: ResponseJSON = await this.services.getAllUsers();
       res.status(users.statusCode).send(users);
     } catch (error) {

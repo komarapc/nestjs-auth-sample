@@ -3,10 +3,12 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { NextFunction, Request, Response } from 'express';
 
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common/pipes';
+import fastify from 'fastify';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -20,6 +22,7 @@ async function bootstrap() {
     .setDescription('See warehouse api docs')
     .setVersion('1.0')
     .setContact('Komar', '', 'komar.izmi@gmail.com')
+    .addBearerAuth({ in: 'header', type: 'http' })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {

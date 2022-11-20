@@ -46,7 +46,6 @@ export class AuthController {
         header: request.headers,
         network: request.ip,
       });
-      console.log({ signin });
       res.status(signin.statusCode).send(signin);
     } catch (error) {
       res.status(400).send(errorDebug(error));
