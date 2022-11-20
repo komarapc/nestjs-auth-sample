@@ -7,7 +7,7 @@ import {
   response201,
   response404,
   response405,
-} from './../../app/lib/response';
+} from '../../lib/response';
 
 import { Injectable } from '@nestjs/common';
 import { RoleRepository } from './roles.repository';

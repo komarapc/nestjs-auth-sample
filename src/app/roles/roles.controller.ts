@@ -3,11 +3,7 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Controller, Get } from '@nestjs/common';
 
 import { RolesService } from './roles.service';
-import {
-  errorDebug,
-  response400,
-  default_msg_400,
-} from './../../app/lib/response';
+import { errorDebug, response400, default_msg_400 } from '../../lib/response';
 import { Body, Param, Post } from '@nestjs/common/decorators';
 @ApiTags('Roles')
 @Controller('roles')

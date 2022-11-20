@@ -1,10 +1,10 @@
 import { AuthController } from './auth.controller';
-import { AuthLogRepository } from 'src/auth-log/auth-log.repository';
+import { AuthLogRepository } from 'src/app/auth-log/auth-log.repository';
 import { AuthService } from './auth.service';
-import { HasRolesRepository } from 'src/has-roles/has-roles.repository';
+import { HasRolesRepository } from 'src/app/has-roles/has-roles.repository';
 import { Module } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import UserRepository from 'src/users/users.repository';
+import UserRepository from 'src/app/users/users.repository';
 
 @Module({
   imports: [],

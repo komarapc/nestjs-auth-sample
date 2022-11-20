@@ -1,4 +1,4 @@
-import { DEBUG } from './../config/config';
+import { DEBUG } from '../config/config';
 
 export type T_ResponseJSON = {
   statusCode: number;

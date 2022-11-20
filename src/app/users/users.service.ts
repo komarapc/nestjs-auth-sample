@@ -10,10 +10,10 @@ import {
   response201,
   response404,
   response405,
-} from './../../app/lib/response';
+} from '../../lib/response';
 
 import { HttpException } from '@nestjs/common/exceptions';
-import { SALT_ROUND } from './../../app/config/config';
+import { SALT_ROUND } from '../../config/config';
 import { T_User } from './users.dto';
 import UserRepository from './users.repository';
 

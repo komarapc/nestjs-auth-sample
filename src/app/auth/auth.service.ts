@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
-import { T_AuthLog, T_AuthLogHeader } from 'src/auth-log/auth-log.dto';
+import { T_AuthLog, T_AuthLogHeader } from 'src/app/auth-log/auth-log.dto';
 import {
   default_msg_200,
   default_msg_404,
@@ -9,14 +9,14 @@ import {
   response200,
   response201,
   response404,
-} from './../../app/lib/response';
+} from '../../lib/response';
 
-import { AuthLogRepository } from 'src/auth-log/auth-log.repository';
-import { HasRolesRepository } from 'src/has-roles/has-roles.repository';
+import { AuthLogRepository } from 'src/app/auth-log/auth-log.repository';
+import { HasRolesRepository } from 'src/app/has-roles/has-roles.repository';
 import { Injectable } from '@nestjs/common';
-import { SECRET_KEY } from 'app/config/config';
+import { SECRET_KEY } from 'src/config/config';
 import { T_Token } from './auth.dto';
-import UserRepository from 'src/users/users.repository';
+import UserRepository from 'src/app/users/users.repository';
 
 @Injectable()
 export class AuthService {

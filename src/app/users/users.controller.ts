@@ -13,7 +13,7 @@ import ResponseJSON, {
   errorDebug,
   response400,
   default_msg_400,
-} from './../../app/lib/response';
+} from '../../lib/response';
 import { Body, Delete, Param, Patch, Res } from '@nestjs/common/decorators';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
 import { HttpStatus } from '@nestjs/common/enums';

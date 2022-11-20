@@ -1,7 +1,4 @@
-import ResponseJSON, {
-  errorDebug,
-  response400,
-} from './../../app/lib/response';
+import ResponseJSON, { errorDebug, response400 } from '../../lib/response';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Body, Header, Param, Post, Res } from '@nestjs/common/decorators';
 
